@@ -1,0 +1,18 @@
+# binaries
+*.exe
+*.test
+
+# env / secrets
+.env
+*.local
+
+# coverage & profiling
+coverage.out
+*.prof
+
+# logs
+*.log
+
+# editor
+.idea/
+.vscode/
