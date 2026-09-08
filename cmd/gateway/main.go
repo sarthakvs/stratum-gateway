@@ -1,7 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
-	fmt.Println("Stratum-gateway is running...")
+	cfg, err := LoadConfig()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Config:", err)
+		os.Exit(1)
+	}
+	fmt.Println("Stratum-gateway is running on ...", cfg.Addr)
 }
