@@ -72,5 +72,3 @@ func TestLoadConfig_Invalid(t *testing.T) {
 		})
 	}
 }
-
-

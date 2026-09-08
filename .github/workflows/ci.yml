@@ -1,0 +1,55 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s
+          --health-timeout 3s --health-retries 10
+      postgres:
+        image: pgvector/pgvector:pg18
+        env:
+          POSTGRES_USER: gateway
+          POSTGRES_PASSWORD: gateway
+          POSTGRES_DB: gateway
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U gateway" --health-interval 5s
+          --health-timeout 3s --health-retries 10
+    
+    env:
+      REDIS_ADDR: localhost:6379
+      POSTGRES_URL: postgres://gateway:gateway@localhost:5432/gateway?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      
+      - name: gofmt
+        run: |
+          files=$(gofmt -l .)
+          if [-n "$files" ]; then echo "unformatted files:"; echo "$files"; exit 1; fi
+      
+      - run: go vet ./...
+
+      - name: staticcheck
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@latest
+          staticcheck ./...
+      
+      - run: go build ./...
+
+      - run: go test -race -coverprofile=coverage.out ./...
+
+      - run: go tool cover -func=coverage.out
+
