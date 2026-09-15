@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"text/template/parse"
 
-	"github.com/sarthakvs/statum-gateway/internal/provider"
 	"github.com/sarthakvs/stratum-gateway/internal/provider"
 )
 
@@ -45,7 +43,7 @@ func decodeRequest(r *http.Request) (provider.Request, error) {
 		return provider.Request{}, &APIError{
 			Status:  http.StatusBadRequest,
 			Code:    "invalid_json",
-			Message: fmt.Sprintf("request body is not a valid JSON: %V", err),
+			Message: fmt.Sprintf("request body is not a valid JSON: %v", err),
 		}
 	}
 
