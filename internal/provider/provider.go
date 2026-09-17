@@ -1,4 +1,5 @@
 package provider
+
 import "context"
 
 type ChunkStream interface {
@@ -8,5 +9,5 @@ type ChunkStream interface {
 
 type Provider interface {
 	Name() string
-	Stream(ctx context.Context,req Request) (ChunkStream,error)
-} 
+	Stream(ctx context.Context, req Request) (ChunkStream, error)
+}
